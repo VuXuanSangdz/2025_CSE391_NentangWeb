@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đặt hàng trực tuyến - Shop Xịn</title>
+  <meta name="viewport" content="width=900">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="shop-bg"></div>
+  <div class="centerbox">
+    <div class="order-card">
+      <div class="shop-icon"></div>
+      <div class="shop-title">Đặt Hàng Nhanh Chóng</div>
+      <div class="shop-subtitle">
+        Mua sắm tiện lợi cùng Shop Xịn.<br>
+        Vui lòng nhập thông tin sản phẩm bạn muốn mua hoặc để lại tên, Shop sẽ liên hệ xác nhận và giao hàng tận nơi.
+      </div>
+      <form class="order-form" autocomplete="off" onsubmit="return false;">
+        <label class="input-label" for="input">Nhập sản phẩm hoặc tên của bạn:</label>
+        <div class="input-wrap">
+          <input
+            id="input"
+            type="text"
+            placeholder="Ví dụ: iPhone 15 Pro, Áo thun nam, Nguyễn Văn A..."
+            oninput="handleInput(event)"
+            maxlength="40"
+            autocomplete="off"
+          />
+          <button type="button" class="btn-clear" title="Xóa" onclick="clearInput()">×</button>
+        </div>
+        <div class="input-hint">* Thông tin càng đầy đủ, Shop xử lý đơn càng nhanh!</div>
+      </form>
+      <div class="result-flex">
+        <div class="result-group">
+          <div class="result-label">Thông tin bạn vừa nhập:</div>
+          <div class="result-value" id="currentValue"></div>
+          <div class="result-desc">Bạn có thể kiểm tra lại trước khi gửi.</div>
+        </div>
+        <div class="result-group result-group-count">
+          <div class="result-label">Số lần thao tác:</div>
+          <div class="result-count"><span id="renderCount">0</span></div>
+          <div class="result-desc">Cứ mỗi lần bạn nhập thông tin mới, hệ thống sẽ tự động cập nhật.</div>
+        </div>
+      </div>
+    </div>
+    <div class="credit">
+      <b>Shop Xịn – Uy tín tạo nên thương hiệu.</b><br>
+      Hotline: <a href="tel:0909123456">0909 123 456</a> | Địa chỉ: 123 Đường Số 1, TP. HCM
+    </div>
+  </div>
+  <div id="successToast" class="toast">✔ Đã lưu thông tin! Shop sẽ liên hệ sớm nhất.</div>
+  <script src="script.js"></script>
+</body>
+</html>
+
