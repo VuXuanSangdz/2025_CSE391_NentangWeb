@@ -6,7 +6,7 @@ React Hooks là một tính năng mạnh mẽ được giới thiệu từ React
 
 ## 1. `useState`
 
-`useState` là một React Hook cho phép bạn thêm biến trạng thái (state) vào Function Component. Khi state thay đổi, component sẽ re-render (vẽ lại giao diện) để cập nhật giá trị mới.
+`useState` là một React Hook cho phép bạn thêm biến trạng thái (**state**) vào Function Component. Khi state thay đổi, component sẽ re-render (vẽ lại giao diện) để cập nhật giá trị mới.
 
 ### 1.1 Nguyên lý hoạt động
 
