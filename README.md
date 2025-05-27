@@ -1,229 +1,254 @@
+# React Hooks: useState, useRef và useLayoutEffect
 
-# 📘 React Hooks: useState, useRef, useLayoutEffect
+## 1. useState là gì?
+- useState là một React Hook được giới thiệu từ React 16.8, cho phép bạn thêm biến trạng thái (state) vào Function Component (trước đây chỉ Class Component mới có state).
+- Khi state thay đổi, component sẽ re-render (vẽ lại giao diện) để cập nhật giá trị mới.
 
-## 1. `useState`
+### 1.1 Nguyên lý hoạt động
+- Khi gọi `useState(giá_trị_khởi_tạo)`, React tạo ra một biến lưu trữ giá trị state cho mỗi lần render của component.
+- React giữ một "danh sách state riêng biệt" cho mỗi component, đảm bảo đúng state được dùng ở đúng component.
 
-### 1.1 Giới thiệu
-`useState` là một React Hook (từ React 16.8) cho phép bạn sử dụng state trong Function Component.
-
-- Trước đây, chỉ có Class Component mới có state.
-- Khi state thay đổi, component sẽ **re-render** để cập nhật giao diện.
-
-### 1.2 Nguyên lý hoạt động
-
-- Mỗi lần gọi `useState(initialValue)`, React tạo vùng lưu trữ riêng cho state trong từng lần render.
-- React giữ danh sách state riêng biệt cho từng component.
-
-### 1.3 Cú pháp
-
+### 1.2 Cách khai báo
 ```jsx
 const [state, setState] = useState(initialValue);
-```
+state: Biến lưu trữ giá trị hiện tại.
 
-- `state`: Biến chứa giá trị hiện tại.
-- `setState`: Hàm cập nhật giá trị `state` (gây re-render).
-- `initialValue`: Giá trị khởi tạo.
+setState: Hàm dùng để thay đổi giá trị state. Mỗi lần gọi, component sẽ re-render.
 
-#### 📌 Ví dụ
-
-```jsx
-const [name, setName] = useState('ChatGPT');
-```
-
-### 1.4 Cập nhật state
-
-#### a. Trực tiếp
-
-```js
-setState(newValue);
-```
-
-#### b. Dựa trên giá trị trước đó
-
-```js
-setState(prevState => newValueBasedOnPrevState);
-```
+initialValue: Giá trị khởi tạo của state (có thể là số, chuỗi, mảng, object...).
 
 Ví dụ:
 
-```js
+jsx
+Copy
+Edit
+const [name, setName] = useState('ChatGPT');
+1.3 Cách cập nhật state
+a. Cập nhật trực tiếp
+
+jsx
+Copy
+Edit
+setState(newValue);
+b. Cập nhật dựa trên giá trị trước
+
+jsx
+Copy
+Edit
+setState(prevState => newValueBasedOnPrevState);
+Ví dụ:
+
+jsx
+Copy
+Edit
 setCount(prevCount => prevCount + 1);
-```
+1.4 Tính chất & lưu ý khi dùng useState
+a. Bất đồng bộ: setState KHÔNG cập nhật ngay lập tức.
 
-> ✅ Tránh lỗi khi cập nhật liên tục hoặc trong nhiều sự kiện.
+b. State chỉ có tác dụng trong phạm vi component.
 
-### 1.5 Tính chất và lưu ý
+c. Khai báo nhiều state: Có thể khai báo nhiều biến state trong một component.
 
-- `setState` **bất đồng bộ** – không cập nhật ngay lập tức.
-- State **cục bộ** trong component – không ảnh hưởng đến component khác.
-- Có thể khai báo **nhiều biến state**:
+d. Cập nhật state dạng object/array: Cần sao chép object/array mới khi cập nhật.
 
-```js
-const [name, setName] = useState('');
-const [age, setAge] = useState(0);
-```
+Ví dụ:
 
-- Khi làm việc với **object hoặc array**, cần tạo bản sao mới:
+jsx
+Copy
+Edit
+const [user, setUser] = useState({name: '', age: 0});
+setUser(prevUser => ({ ...prevUser, name: 'New Name' }));
+1.5 Quy tắc sử dụng useState
+Chỉ gọi useState ở đầu function component, không gọi trong vòng lặp, điều kiện hoặc function con.
 
-```js
-setUser(prev => ({ ...prev, name: 'New Name' }));
-```
+Thứ tự gọi các hook phải luôn giống nhau qua mỗi lần render.
 
-### 1.6 Quy tắc sử dụng
+2. Hook useRef và useLayoutEffect
+2.1 Hook useRef
+a. Khái niệm
+useRef cho phép lưu trữ một giá trị bất kỳ qua nhiều lần render mà không bị mất.
 
-- Chỉ gọi `useState` ở **đầu** function component.
-- Không gọi trong vòng lặp, điều kiện hoặc hàm con.
-- Thứ tự gọi hook phải **ổn định** giữa các lần render.
+Tham chiếu tới DOM node để thao tác trực tiếp.
 
----
+Không làm component re-render khi giá trị .current thay đổi.
 
-## 2. `useRef`
-
-### 2.1 Khái niệm
-
-`useRef` dùng để:
-
-- Lưu trữ giá trị giữa các lần render mà không gây re-render.
-- Truy cập trực tiếp DOM element.
-
-### 2.2 Cú pháp
-
-```js
+b. Cú pháp
+jsx
+Copy
+Edit
 const myRef = useRef(initialValue);
-```
+myRef.current chứa giá trị bạn lưu trữ hoặc element DOM.
 
-- `myRef.current` chứa giá trị lưu trữ.
+c. Tính chất
+Khi myRef.current thay đổi, component KHÔNG render lại.
 
-### 2.3 Tính chất
+Thích hợp lưu trữ dữ liệu tạm hoặc truy cập/điều khiển DOM.
 
-- Thay đổi `.current` **không gây re-render**.
-- Phù hợp để:
-  - Đếm render
-  - Lưu giá trị trước đó
-  - Truy cập DOM
+d. Ứng dụng thực tiễn
+Giữ giá trị giữa các lần render.
 
-### 2.4 Ứng dụng
+Truy xuất DOM node: focus, scroll, đo kích thước...
 
-#### ✅ Focus input
+Kết hợp với các hook khác tối ưu hiệu suất.
 
-```jsx
-const inputRef = useRef(null);
-<input ref={inputRef} />;
-inputRef.current.focus();
-```
+e. Ví dụ
+jsx
+Copy
+Edit
+import React, { useRef } from 'react';
 
-#### ✅ Đếm số lần render
+function DemoRef() {
+  const inputRef = useRef(null);
 
-```jsx
-const renderCount = useRef(1);
-useEffect(() => {
-  renderCount.current += 1;
-});
-```
+  const handleFocus = () => {
+    inputRef.current.focus();
+  };
 
-#### ✅ Lưu giá trị trước đó
+  return (
+    <div>
+      <input ref={inputRef} />
+      <button onClick={handleFocus}>Focus Input</button>
+    </div>
+  );
+}
+2.2 Hook useLayoutEffect
+a. Khái niệm
+useLayoutEffect chạy đồng bộ sau khi React cập nhật DOM, trước khi trình duyệt vẽ lại giao diện (paint).
 
-```js
-const prevValue = useRef(value);
-useEffect(() => {
-  prevValue.current = value;
-}, [value]);
-```
+Giúp tránh hiện tượng "giật hình" (layout shift).
 
-#### ✅ Lưu timer ID
-
-```js
-const timer = useRef(null);
-timer.current = setTimeout(...);
-```
-
----
-
-## 3. `useLayoutEffect`
-
-### 3.1 Giới thiệu
-
-`useLayoutEffect` giống `useEffect` nhưng chạy **đồng bộ ngay sau khi DOM cập nhật** và **trước khi browser vẽ lại giao diện**.
-
-> ⚠️ Tránh "giật hình" (layout shift) khi thao tác với DOM.
-
-### 3.2 Cú pháp
-
-```js
+b. Cú pháp
+jsx
+Copy
+Edit
 useLayoutEffect(() => {
-  // Logic
+  // Logic sau khi DOM cập nhật
   return () => {
-    // Cleanup (nếu cần)
+    // Cleanup (tùy chọn)
   };
 }, [deps]);
-```
+c. Tính chất và ứng dụng
+Đảm bảo DOM đã cập nhật trước khi code chạy.
 
-### 3.3 Ứng dụng thực tiễn
+Phù hợp đo đạc kích thước, vị trí, sửa layout DOM đồng bộ.
 
-#### ✅ Đo kích thước phần tử
+Tránh layout shift, tối ưu trải nghiệm người dùng.
 
-```jsx
-const divRef = useRef(null);
-const [width, setWidth] = useState(0);
+Ví dụ:
 
-useLayoutEffect(() => {
-  if (divRef.current) {
-    setWidth(divRef.current.offsetWidth);
-  }
-}, []);
-```
+jsx
+Copy
+Edit
+import React, { useLayoutEffect, useRef, useState } from 'react';
 
-#### ✅ Scroll đến phần tử
+function MeasureDiv() {
+  const divRef = useRef(null);
+  const [height, setHeight] = useState(0);
 
-```jsx
-divRef.current.scrollIntoView({ behavior: 'smooth' });
-```
+  useLayoutEffect(() => {
+    if (divRef.current) {
+      setHeight(divRef.current.offsetHeight);
+    }
+  }, []);
 
-#### ✅ Cập nhật style dựa trên DOM
+  return (
+    <div>
+      <div ref={divRef} style={{ padding: 20, border: '1px solid #ccc' }}>
+        Đo chiều cao thẻ này
+      </div>
+      <p>Chiều cao: {height}px</p>
+    </div>
+  );
+}
+3. Cú pháp đầy đủ useState
+jsx
+Copy
+Edit
+const [state, setState] = useState(initialValue);
+const: khai báo biến không đổi tên.
 
-```js
-const height = divRef.current.offsetHeight;
-element.style.height = `${height}px`;
-```
+[state, setState]: array destructuring, state là giá trị hiện tại, setState là hàm cập nhật.
 
----
+initialValue: giá trị khởi tạo.
 
-## 4. Nguyên tắc cập nhật state bất đồng bộ
+Ý nghĩa:
 
-### 4.1 React không cập nhật state ngay lập tức
+Lần render đầu giá trị state = initialValue.
 
-```js
+Gọi setState(newValue) cập nhật state và render lại component.
+
+Ví dụ:
+
+jsx
+Copy
+Edit
+const [count, setCount] = useState(0);
+const [text, setText] = useState('');
+4. Nguyên tắc cập nhật state bất đồng bộ
+4.1 Khái niệm
+setState không cập nhật ngay lập tức.
+
+React gom các cập nhật state trong event và xử lý sau.
+
+4.2 Cách hoạt động
+jsx
+Copy
+Edit
+const [count, setCount] = useState(0);
+
 const handleClick = () => {
   setCount(count + 1);
-  console.log(count); // vẫn là giá trị cũ
+  console.log(count); // Vẫn là giá trị cũ
 };
-```
-
-### 4.2 React dùng "hàng đợi" (queue)
-
-- Gom nhiều cập nhật lại rồi render 1 lần → tối ưu hiệu suất.
-- Để tránh lỗi, dùng callback dựa trên giá trị trước:
-
-```js
+4.3 Cách cập nhật đúng khi dựa trên giá trị cũ
+jsx
+Copy
+Edit
 setCount(prev => prev + 1);
-setCount(prev => prev + 1); // tăng 2 đơn vị
-```
+setCount(prev => prev + 1);
+4.4 Lưu ý quan trọng
+Giá trị state chỉ thay đổi trong lần render tiếp theo.
 
----
+Không lấy được giá trị mới ngay sau khi gọi setState.
 
-## 5. Tổng kết
+5. Ứng dụng thực tiễn của useRef
+a. Giữ giá trị giữa các lần render không làm re-render
+Dùng để lưu các giá trị tạm như bộ đếm render, timer ID, giá trị trước đó.
 
-| Hook              | Chức năng chính                                                       | Gây re-render |
-|-------------------|------------------------------------------------------------------------|---------------|
-| `useState`        | Quản lý state trong component                                          | ✅            |
-| `useRef`          | Lưu giá trị hoặc truy cập DOM, không gây re-render                     | ❌            |
-| `useLayoutEffect` | Chạy sau DOM cập nhật, dùng cho đo đạc, scroll, chỉnh layout          | ✅            |
+Ví dụ đếm số lần render:
 
----
+jsx
+Copy
+Edit
+import React, { useRef, useEffect } from 'react';
 
-## 📎 Tài liệu tham khảo
+function RenderCounter() {
+  const renderCount = useRef(1);
 
-- [React Docs – Hooks](https://reactjs.org/docs/hooks-intro.html)
-- [useState](https://reactjs.org/docs/hooks-state.html)
-- [useRef](https://reactjs.org/docs/hooks-reference.html#useref)
-- [useLayoutEffect](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)
+  useEffect(() => {
+    renderCount.current += 1;
+  });
+
+  return <p>Số lần render: {renderCount.current}</p>;
+}
+b. Tham chiếu DOM để thao tác trực tiếp
+Ví dụ tự động focus input:
+
+jsx
+Copy
+Edit
+import React, { useRef, useEffect } from 'react';
+
+function AutoFocusInput() {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  return <input ref={inputRef} placeholder="Tự động focus..." />;
+}
+6. Tổng kết
+useState: Hook cơ bản để tạo và quản lý state trong function component, phục vụ các thao tác như nhập liệu, click, hiển thị/ẩn...
+
+useRef, useLayoutEffect: Hỗ trợ tối ưu hiệu suất render, thao tác sâu với DOM, xây dựng chức năng nâng cao, cải thiện trải nghiệm người dùng.
